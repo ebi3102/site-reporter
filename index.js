@@ -9,7 +9,15 @@ let viewportSizes =
   375 //mobile
 ]
 
-let urlsList = line_reader('urls.txt')
-console.log(urlsList)
 
+line_reader('urls.txt')
+  .then(lines => {
+    // Store the lines array in a variable
+    const urlsList = lines;
+    console.log(storedLines);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 
+;
