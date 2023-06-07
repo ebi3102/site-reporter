@@ -53,40 +53,33 @@ json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
           //loop on the viewPortSizes
 
           viewportSizes.map(currentWidth=>{
+
             (async () => {
               // Launch a headless Chrome instance
               const browser = await puppeteer.launch({headless: true});
-            
               // Open a new page
               const page = await browser.newPage();
-            
               // Set the viewport size
               await page.setViewport({
                 width: currentWidth, // Change this value to your desired width
                 height: 1080, // Change this value to your desired height
               });
-            
               // Navigate to the website
               await page.goto(url); // Change the URL to the desired website
-            
-            
               await page.waitForTimeout(3000);
-            
               // // Scroll to the bottom of the page
               await page.evaluate(() => {
                 window.scrollTo(0, document.documentElement.scrollHeight);
               });
-            
               // // Wait for the images to load
               await page.waitForTimeout(3000); // Add a delay of 3 seconds (3000 milliseconds)
-            
-            
               // Take a screenshot of the entire page
               await page.screenshot({ path: directory_name + '/'+urlName +'_'+ currentWidth + '.png' , fullPage: true });
               await console.log('screenshuting from: '+ url + 'in width of '+ currentWidth)
               // Close the browser
               await browser.close();
-            })();
+            });
+
           })
           // }) //Async widthes loop
           
