@@ -1,5 +1,4 @@
 const line_reader = require('./file_reader')
-const captureScreenshotScrolled = require('./captureScreenshotScrolled')
 const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
 
@@ -34,8 +33,7 @@ json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
       urls.map(url=>{
           if(url != ''){
               viewportSizes.map(currentWidth=>{
-                  captureScreenshotScrolled(url, directory_name, currentWidth, 3000);
-                  // captureScreenshot(url, directory_name, currentWidth, 3000);
+                  captureScreenshot(url, directory_name, currentWidth, 3000);
               })
           }  
       })  

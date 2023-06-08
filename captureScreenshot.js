@@ -1,22 +1,42 @@
 const puppeteer = require('puppeteer');
+
+async function autoScroll(page){
+  await page.evaluate(async () => {
+      await new Promise((resolve) => {
+          var totalHeight = 0;
+          var distance = 100;
+          var timer = setInterval(() => {
+              var scrollHeight = document.body.scrollHeight;
+              window.scrollBy(0, distance);
+              totalHeight += distance;
+
+              if(totalHeight >= scrollHeight - window.innerHeight){
+                  clearInterval(timer);
+                  resolve();
+              }
+          }, 100);
+      });
+  });
+}
+
 async function captureScreenshot(url, directory_name, currentWidth, timeWaite) {
     try {
-      const browser = await puppeteer.launch({ headless: true, timeout: 0  });
+      
+      const browser = await puppeteer.launch({ headless: true, timeout: 0 });
       const page = await browser.newPage();
       await page.setViewport({
         width: currentWidth,
         height: 1080,
       });
       await page.goto(url);
-      await page.waitForTimeout(timeWaite)
-      await page.evaluate(() => {
-        window.scrollTo(0, document.documentElement.scrollHeight);
-      });
       await page.waitForTimeout(timeWaite);
+  
+      await autoScroll(page);
+
       const regex = /[^a-zA-Z0-9\s]/g;
       let urlName =  url.replace(regex, '_');
       await page.screenshot({
-        path: `${directory_name}/${urlName}_${currentWidth}.png`,
+        path: `${directory_name}/${urlName}_${currentWidth}-Scrolled.png`,
         fullPage: true,
       });
       console.log(`Screenshot taken from ${url} in width of ${currentWidth}`);
@@ -25,5 +45,4 @@ async function captureScreenshot(url, directory_name, currentWidth, timeWaite) {
       console.error('Error capturing screenshot:', error);
     }
   };
-
-module.exports = captureScreenshot;
+  module.exports = captureScreenshot;
