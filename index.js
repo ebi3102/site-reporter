@@ -17,12 +17,12 @@ function json(url) {
 
 let dataIP = ''
 let apiKey = '619e73623914fb75094ff874700118b7cb7cbf229eb6bfb1281d0a48';
-// json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
-//   dataIP = data.ip;
-//   const date = new Date();
-//   let stringDate = date.getFullYear() + '-' + date.getMonth()+'-'+date.getDay()+'_h'+date.getHours();
-  // let directory_name = './screenshots/'+ stringDate +'_'+ dataIP
-  let directory_name = './screenshots/';
+json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
+  dataIP = data.ip;
+  const date = new Date();
+  let stringDate = date.getFullYear() + '-' + date.getMonth()+'-'+date.getDay()+'_h'+date.getHours();
+  let directory_name = './screenshots/'+ stringDate +'_'+ dataIP
+  // let directory_name = './screenshots/';
   if(!fs.existsSync(directory_name)){
     fs.mkdirSync(directory_name, { recursive: true })
   }
@@ -44,5 +44,5 @@ let apiKey = '619e73623914fb75094ff874700118b7cb7cbf229eb6bfb1281d0a48';
       console.error('Error:', error);
   });
 
-// });
+});
 
