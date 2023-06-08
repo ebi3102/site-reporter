@@ -12,15 +12,28 @@ async function captureScreenshotScrolled(url, directory_name, currentWidth, time
       await page.waitForTimeout(timeWaite);
   
       // Get the height of the rendered page
+      const scrollHeight1 = await page.evaluate(() => {
+        return Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.clientHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+      });
+      console.log('ScrollHeightof ' + url +': '+ scrollHeight1)
       const scrollHeight = await page.evaluate(() => {
           return Math.max(
-            document.body.scrollHeight,
-            document.body.offsetHeight,
-            document.documentElement.clientHeight,
-            document.documentElement.scrollHeight,
-            document.documentElement.offsetHeight
+            // document.body.scrollHeight,
+            // document.body.offsetHeight,
+            // document.documentElement.clientHeight,
+            // document.documentElement.scrollHeight,
+            // document.documentElement.offsetHeight
+            document.body.getBoundingClientRect().height,
+            document.documentElement.getBoundingClientRect().height
           );
         });
+      console.log('New ScrollHeight' + url +': '+ scrollHeight)
   
       await page.setViewport({
           width: currentWidth,
