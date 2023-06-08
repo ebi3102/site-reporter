@@ -1,14 +1,15 @@
 const line_reader = require('./file_reader')
 const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
+const data = require('./widthSizes.json');
+// import data from  assert { type: 'json' };
 
 
-let viewportSizes =
-[
-  1920, //desktop
-  768, //tablet
-  375 //mobile
-]
+let viewportSizes = []
+
+data.map(width=>{
+  viewportSizes.push(width.width)
+})
 
 function json(url) {
     return fetch(url).then(res => res.json());
