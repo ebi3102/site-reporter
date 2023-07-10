@@ -36,12 +36,12 @@ async function linke_checker(page, link){
   try{
     if(link){
       const response = await page.goto(link, { waitUntil: 'networkidle0' });
-      console.log(`Checking link: ${link}`);
+      // console.log(`Checking link: ${link}`);
       if(response && response.status()){
         if (response.status() >= 400) {
           console.log(`Broken link: ${link} [${response.status()}]`);
         }else{
-          console.log(`OK link: ${link} [${response.status()}]`);
+          // console.log(`OK link: ${link} [${response.status()}]`);
         }
       }
     }
