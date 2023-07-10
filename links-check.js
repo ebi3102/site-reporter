@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 async function crawler(url){
   try{
@@ -43,6 +44,13 @@ async function linke_checker(page, link){
       if(response && response.status()){
         if (response.status() >= 400) {
           console.log(`Broken link: ${link} [${response.status()}]`);
+          fs.appendFile("test-log", `Broken link: ${link} [${response.status()}] \n`,
+          "utf8",
+          function(err) {
+            if(err) {
+                return console.log(err);
+            }
+          }); 
         }else{
           console.log(`OK link: ${link} [${response.status()}]`);
         }
@@ -51,5 +59,14 @@ async function linke_checker(page, link){
 
   } catch(error){
     console.error(`Error in opening link ${link} :`, error);
+    fs.appendFile("error-log", `Error in opening link ${link} : ${error} \n`,
+    "utf8",
+    function(err) {
+      if(err) {
+          return console.log(err);
+      }
+    });
   }
 }
+
+// async function write_log()
