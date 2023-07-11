@@ -3,6 +3,8 @@ const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
 const data = require('./widthSizes.json');
 const crawler = require('./link-checkers/links-check');
+const url_status_check = require('./link-checkers/url-status');
+const write_log = require('./file-handlers/file-writer');
 // import data from  assert { type: 'json' };
 
 
@@ -32,18 +34,43 @@ json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
     // Store the lines array in a variable
     const urls = lines;
     (async function(){
+      var incorrectUrls = [];
       for await(const url of urls){
         if(url != ''){
           console.log(url);
-          await (async function(){
-            for await(const currentWidth of viewportSizes){
-              console.log('--',url,': ',currentWidth);
-              await captureScreenshot(url, directory_name, currentWidth, 3000);
-            }
-          })(); 
-          console.log('-- Crawl the ',url);
-          await crawler(url, directory_name);               
+          let status = await url_status_check(url);
+          if(status){
+            await (async function(){
+              for await(const currentWidth of viewportSizes){
+                console.log('--',url,': ',currentWidth);
+                await captureScreenshot(url, directory_name, currentWidth, 3000);
+              }
+            })(); 
+            console.log('-- Crawl the ',url);
+            await crawler(url, directory_name);
+          }else{
+            incorrectUrls.push(url);
+          }
+                         
         } 
+      }
+      if(incorrectUrls.length > 0){
+        for await(const url of incorrectUrls){
+          console.log('rereview: ',url);
+          let status = await url_status_check(url);
+          if(status){
+            await (async function(){
+              for await(const currentWidth of viewportSizes){
+                console.log('--',url,': ',currentWidth);
+                await captureScreenshot(url, directory_name, currentWidth, 3000);
+              }
+            })(); 
+            console.log('-- Crawl the ',url);
+            await crawler(url, directory_name);
+          }else{
+            write_log(`${directory_name}/debug.log`, `The ${url} is not opened \n`)
+          }
+        }
       }
     })();  
   })
