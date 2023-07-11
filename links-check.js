@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
+const write_log = require('./file-handlers/file-writer');
 
 async function crawler(url, directory_name){
   try{
@@ -63,15 +63,4 @@ async function linke_checker(page, link, logPath, pageUrl){
       ${link} : ${error} \n`
     );
   }
-}
-
-async function write_log(filePath, text){
-  fs.appendFile(filePath, text,
-    "utf8",
-    function(err) {
-      if(err) {
-          return console.log(err);
-      }
-    }
-  ); 
 }
