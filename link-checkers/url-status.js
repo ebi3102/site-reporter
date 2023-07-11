@@ -8,15 +8,15 @@ async function url_status_check(url){
       if(url){
         const response = await page.goto(url, { waitUntil: 'networkidle0' });
         if (response.status() >= 400) {
-            return false;
+            var urlstatus =  false;
         }else{
-            return true;
+            var urlstatus = true;
         }
       }else{
-        return false;
+        var urlstatus = false;
       }
-
       await browser.close();
+      return urlstatus;
     } catch (error) {
       return false;
     }
