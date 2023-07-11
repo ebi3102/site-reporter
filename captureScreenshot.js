@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const write_log = require('./file-handlers/file-writer');
 
 async function autoScroll(page){
   await page.evaluate(async () => {
@@ -43,6 +44,7 @@ async function captureScreenshot(url, directory_name, currentWidth, timeWaite) {
       await browser.close();
     } catch (error) {
       console.error('Error capturing screenshot:', error);
+      write_log(`${directory_name}/debug.log`, `Error capturing screenshot: ${error} \n`);
     }
   };
   module.exports = captureScreenshot;
