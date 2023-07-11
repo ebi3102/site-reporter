@@ -23,7 +23,6 @@ async function crawler(url, directory_name){
     });
 
     let uniqueLinks = [...new Set(links)];
-    console.log(uniqueLinks);
     for (const link of uniqueLinks) {
       await linke_checker(page, link, directory_name,url);
     }
@@ -31,6 +30,10 @@ async function crawler(url, directory_name){
     await browser.close();
   } catch (error) {
     console.error('Error in opening url:', error);
+    await write_log(
+      `${directory_name}/debug.log`,
+      `Error in opening url: ${url} \n`
+    );
   }
 };
 
@@ -40,17 +43,13 @@ async function linke_checker(page, link, logPath, pageUrl){
   try{
     if(link){
       const response = await page.goto(link, { waitUntil: 'networkidle0' });
-      console.log(`Checking link: ${link}`);
       if(response && response.status()){
         if (response.status() >= 400) {
-          console.log(`Broken link: ${link} [${response.status()}]`);
           await write_log(
             `${logPath}/broken.log`,
             `In ${pageUrl} there is the follow broken link:
             ${link} [${response.status()}] \n`
           );
-        }else{
-          console.log(`OK link: ${link} [${response.status()}]`);
         }
       }
     }
