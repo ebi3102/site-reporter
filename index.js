@@ -1,4 +1,4 @@
-const line_reader = require('./file_reader')
+const line_reader = require('./file-handlers/file_reader')
 const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
 const data = require('./widthSizes.json');
