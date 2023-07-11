@@ -46,7 +46,7 @@ json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
                 await captureScreenshot(url, directory_name, currentWidth, 3000);
               }
             })(); 
-            console.log('-- Crawl the ',url);
+            console.log('-- Crawling the ',url);
             await crawler(url, directory_name);
           }else{
             incorrectUrls.push(url);
