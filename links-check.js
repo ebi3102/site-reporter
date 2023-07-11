@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-async function crawler(url){
+async function crawler(url, directory_name){
   try{
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -25,7 +25,7 @@ async function crawler(url){
     let uniqueLinks = [...new Set(links)];
     console.log(uniqueLinks);
     for (const link of uniqueLinks) {
-      await linke_checker(page, link, '.',url);
+      await linke_checker(page, link, directory_name,url);
     }
 
     await browser.close();
@@ -45,7 +45,6 @@ async function linke_checker(page, link, logPath, pageUrl){
         if (response.status() >= 400) {
           console.log(`Broken link: ${link} [${response.status()}]`);
           await write_log(
-            // `${logPath}/broken.log`,
             `${logPath}/broken.log`,
             `In ${pageUrl} there is the follow broken link:
             ${link} [${response.status()}] \n`

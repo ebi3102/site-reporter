@@ -42,7 +42,7 @@ json(`https://api.ipdata.co?api-key=${apiKey}`).then(data => {
             }
           })(); 
           console.log('-- Crawl the ',url);
-          await crawler(url);               
+          await crawler(url, directory_name);               
         } 
       }
     })();  
