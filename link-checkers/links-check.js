@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const write_log = require('./file-handlers/file-writer');
+const write_log = require('../file-handlers/file-writer');
 
 async function crawler(url, directory_name){
   try{

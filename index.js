@@ -2,7 +2,7 @@ const line_reader = require('./file-handlers/file_reader')
 const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
 const data = require('./widthSizes.json');
-const crawler = require('./links-check');
+const crawler = require('./link-checkers/links-check');
 // import data from  assert { type: 'json' };
 
 
