@@ -25,7 +25,7 @@ async function crawler(url){
     let uniqueLinks = [...new Set(links)];
     console.log(uniqueLinks);
     for (const link of uniqueLinks) {
-      await linke_checker(page, link);
+      await linke_checker(page, link, '.',url);
     }
 
     await browser.close();
@@ -36,7 +36,7 @@ async function crawler(url){
 
 module.exports = crawler;
 
-async function linke_checker(page, link){
+async function linke_checker(page, link, logPath, pageUrl){
   try{
     if(link){
       const response = await page.goto(link, { waitUntil: 'networkidle0' });
@@ -44,13 +44,12 @@ async function linke_checker(page, link){
       if(response && response.status()){
         if (response.status() >= 400) {
           console.log(`Broken link: ${link} [${response.status()}]`);
-          fs.appendFile("test-log", `Broken link: ${link} [${response.status()}] \n`,
-          "utf8",
-          function(err) {
-            if(err) {
-                return console.log(err);
-            }
-          }); 
+          await write_log(
+            // `${logPath}/broken.log`,
+            `${logPath}/broken.log`,
+            `In ${pageUrl} there is the follow broken link:
+            ${link} [${response.status()}] \n`
+          );
         }else{
           console.log(`OK link: ${link} [${response.status()}]`);
         }
@@ -59,14 +58,21 @@ async function linke_checker(page, link){
 
   } catch(error){
     console.error(`Error in opening link ${link} :`, error);
-    fs.appendFile("error-log", `Error in opening link ${link} : ${error} \n`,
+    await write_log(
+      `${logPath}/debug.log`,
+      `In ${pageUrl} there is an error in opening link
+      ${link} : ${error} \n`
+    );
+  }
+}
+
+async function write_log(filePath, text){
+  fs.appendFile(filePath, text,
     "utf8",
     function(err) {
       if(err) {
           return console.log(err);
       }
-    });
-  }
+    }
+  ); 
 }
-
-// async function write_log()
