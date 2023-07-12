@@ -42,7 +42,7 @@ module.exports = crawler;
 async function linke_checker(page, link, logPath, pageUrl){
   try{
     if(link){
-      const response = await page.goto(link, { waitUntil: 'networkidle0' });
+      const response = await page.goto(link);
       console.log('Checking: ', link);
       if(response && response.status()){
         if (response.status() >= 400) {
