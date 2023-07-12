@@ -61,7 +61,7 @@ async function linke_checker(page, link, logPath, pageUrl){
   } catch(error){
     console.error(`Error in opening link ${link} :`, error);
     await write_log(
-      `${logPath}/debug.log`,
+      `${logPath}/broken.log`,
       `In ${pageUrl} there is an error in opening link
       ${link} : ${error} \n`
     );
