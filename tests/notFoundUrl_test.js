@@ -11,7 +11,8 @@ const puppeteer = require('puppeteer');
 // let url = "https://wordpress.org/latest.zip";
 // let url = "https://pcmfa.blog/files/John-j-morphy-technical-analysis-of-the-financial-markets-fa.pdf";
 // let url = "https://pcmfa.net/";
-let url= "https://pcmfa.academy/fa/";
+// let url= "https://pcmfa.academy/fa/";
+let url= "https://pcmfa.co/pcmtrader/";
 
 
 crawler(url, '.');
