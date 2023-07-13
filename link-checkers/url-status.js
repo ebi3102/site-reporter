@@ -6,7 +6,7 @@ async function url_status_check(url){
       const page = await browser.newPage();
 
       if(url){
-        const response = await page.goto(url, { waitUntil: 'networkidle0' });
+        const response = await page.goto(url);
         if (response.status() >= 400) {
             var urlstatus =  false;
         }else{
