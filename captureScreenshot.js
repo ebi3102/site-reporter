@@ -29,9 +29,8 @@ async function captureScreenshot(url, directory_name, currentWidth, timeWaite) {
         width: currentWidth,
         height: 1080,
       });
-      await page.goto(url);
-      await page.waitForTimeout(timeWaite);
-  
+      await page.goto(url, {waitUntil: 'networkidle0'} );
+
       await autoScroll(page);
 
       const regex = /[^a-zA-Z0-9\s]/g;
