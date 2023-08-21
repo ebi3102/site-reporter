@@ -24,6 +24,7 @@ async function crawler(url, directory_name){
 
     let uniqueLinks = [...new Set(links)];
     for (const link of uniqueLinks) {
+      
       await linke_checker(page, link, directory_name,url);
     }
 
