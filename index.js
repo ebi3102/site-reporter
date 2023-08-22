@@ -16,35 +16,23 @@ if(!fs.existsSync(directory_name)){
 line_reader('urls.txt')
 .then(lines => {
   // Store the lines array in a variable
-  // var urls = lines;
-  var urls = [' https://pcmfa.blog/category/top-trader/', 'https://pcmfa.co/'];
-  console.log(urls);
+  var urls = lines;
   (async function(){
-    index = 0;
-    while(urls.length > 0){
-      console.log(urls[index]);
-      await crawler(urls[index], directory_name);
+    while(Array.isArray(urls) && urls.length > 0){
+      console.log('checking: ', urls[0]);
+      const url = urls[0];
       urls.shift();
-      console.log('+++++++++++++++++++++++++++');
-      console.log(urls);
-      console.log('+++++++++++++++++++++++++++');
-      index++
+      let status = await url_status_check(url);
+      if(status){
+        let newUrls = await crawler(url, directory_name);
+        if(Array.isArray(newUrls) && newUrls.length >0){
+          urls =[...new Set(urls.concat(newUrls))]
+        }
+        console.log(urls);
+      }else{
+        write_log(`${directory_name}/debug.log`, `The ${url} is not opened \n`)
+      }
     }
-    // for await(const url of urls){
-    //   if(url != ''){
-    //     console.log(url);
-    //     let status = await url_status_check(url);
-    //     if(status){
-    //       // await crawler(url, directory_name);
-
-    //       // const index = myArray.indexOf(2);
-    //       // const x = myArray.splice(index, 1);
-    //     }else{
-    //       incorrectUrls.push(url);
-    //     }
-    //     urls = [];        
-    //   } 
-    // }
   })();  
 })
 .catch(error => {

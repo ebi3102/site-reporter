@@ -1,25 +1,25 @@
 const puppeteer = require('puppeteer');
 
 async function url_status_check(url){
-    try{
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
+  try{
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-      if(url){
-        const response = await page.goto(url);
-        if (response.status() >= 400) {
-            var urlstatus =  false;
-        }else{
-            var urlstatus = true;
-        }
+    if(url){
+      const response = await page.goto(url);
+      if (response.status() >= 400) {
+          var urlstatus =  false;
       }else{
-        var urlstatus = false;
+          var urlstatus = true;
       }
-      await browser.close();
-      return urlstatus;
-    } catch (error) {
-      return false;
+    }else{
+      var urlstatus = false;
     }
+    await browser.close();
+    return urlstatus;
+  } catch (error) {
+    return false;
+  }
 };
 
 module.exports = url_status_check;

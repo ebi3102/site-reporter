@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const write_log = require('../file-handlers/file-writer');
+const { URL } = require('url');
 
 async function crawler(url, directory_name){
   try{
@@ -23,12 +24,23 @@ async function crawler(url, directory_name){
     });
 
     let uniqueLinks = [...new Set(links)];
-    for (const link of uniqueLinks) {
-      
-      await linke_checker(page, link, directory_name,url);
+    var targetDomain = "pcmfa.co";
+    const filteredUrls = uniqueLinks.filter(url => {
+      if(url){
+        const parsedUrl = new URL(url);
+        return parsedUrl.hostname.endsWith(targetDomain);
+      }
+    });
+    for (const link of filteredUrls) {
+      var patterns = [
+        "glass.php",
+        'head.php',
+        'etid',
+      ]; 
+      await linke_checker(patterns, link, directory_name,url);
     }
-
     await browser.close();
+    return filteredUrls;
   } catch (error) {
     console.error('Error in opening url:', error);
     await write_log(
@@ -40,27 +52,24 @@ async function crawler(url, directory_name){
 
 module.exports = crawler;
 
-async function linke_checker(page, link, logPath, pageUrl){
+async function linke_checker(patterns, link, logPath, pageUrl){
   try{
-    if(link){
-      const response = await page.goto(link);
-      console.log('Checking: ', link);
-      if(response && response.status()){
-        if (response.status() >= 400) {
-          console.log( `Broken link: ${link} [${response.status()}] \n`);
-          await write_log(
-            `${logPath}/broken.log`,
-            `In ${pageUrl} there is the follow broken link:
-            ${link} [${response.status()}] \n`
-          );
-        }else{
-          console.log( `Ok link: ${link} [${response.status()}] \n`);
-        }
-      }
+    var patternFound = patterns.some(function(pattern) {
+      var regex = new RegExp(pattern, "i"); // "i" flag for case-insensitive matching
+      return regex.test(link);
+    });
+
+    if(patternFound){
+      console.log(link)
+      await write_log(
+        `${logPath}/hack.log`,
+        `In ${pageUrl} there is the follow danger link:
+        ${link} \n`
+      );
     }
 
   } catch(error){
-    console.error(`Error in opening link ${link} :`, error);
+    console.error(`Error in regestring link ${link} :`, error);
     await write_log(
       `${logPath}/broken.log`,
       `In ${pageUrl} there is an error in opening link
