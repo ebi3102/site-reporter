@@ -1,4 +1,4 @@
-const crawler = require("../link-checkers/links-check");
+const crawler = require("../link-checkers/crawler");
 const puppeteer = require('puppeteer');
 
 

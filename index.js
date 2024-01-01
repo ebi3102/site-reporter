@@ -2,7 +2,7 @@ const line_reader = require('./file-handlers/file_reader')
 const captureScreenshot = require('./captureScreenshot')
 const fs = require('fs');
 const data = require('./widthSizes.json');
-const crawler = require('./link-checkers/links-check');
+const crawler = require('./link-checkers/crawler');
 const url_status_check = require('./link-checkers/url-status');
 const write_log = require('./file-handlers/file-writer');
 
