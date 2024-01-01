@@ -2,32 +2,25 @@ const puppeteer = require('puppeteer');
 const write_log = require('../file-handlers/file-writer');
 const { URL } = require('url');
 
-async function reutersSpider(url, directory_name){
+async function reutersSpider(url, directory_name, targetDomain){
   try{
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
 
     await page.goto(url);
 
-    console.log(page);
-
     const links = await page.evaluate(() => {
       const anchorElements = document.querySelectorAll('a');
-      return Array.from(anchorElements).map((a) =>{
-        if( a.href.search('http') != 0 ){
-          return false;
-        }
-
-        if(a.href.search('/#') != -1){
-          return false;
-        }
-        return a.href;
-      });
+    // const anchorElements = document.querySelectorAll('li.story-collection__story__LeZ29 div.media-story-card__body__3tRWy>a');
+    let Elem = [];
+    for(var i=0; i<anchorElements.length; i++){Elem.push(anchorElements[i].href)}
+    return Elem;
     });
+
 
     let uniqueLinks = [...new Set(links)];
     console.log(links);
-    var targetDomain = "pcmfa.co"; //TODO: set as config
+    // var targetDomain = "pcmfa.co"; //TODO: set as config
     const filteredUrls = uniqueLinks.filter(url => {
       if(url){
         const parsedUrl = new URL(url);
@@ -35,22 +28,17 @@ async function reutersSpider(url, directory_name){
       }
     });
 
+    // const filteredUrls = uniqueLinks;
+
     for (const link of filteredUrls) {
-      var patterns = [
-        "glass.php",
-        'head.php',
-        'etid',
-      ]; 
-      // await linke_checker(patterns, link, directory_name,url);
       await write_log(
         `${directory_name}/hack.log`,
-        `In ${url} there is the follow links:
-        ${link} \n`
+        `${link} \n`
       );
     }
 
     await browser.close();
-    return filteredUrls;
+    // return filter?edUrls;
   } catch (error) {
     console.error('Error in opening url:', error);
     await write_log(
@@ -60,7 +48,7 @@ async function reutersSpider(url, directory_name){
   }
 };
 
-module.exports = crawler;
+module.exports = reutersSpider;
 
 async function linke_checker(patterns, link, logPath, pageUrl){
   try{

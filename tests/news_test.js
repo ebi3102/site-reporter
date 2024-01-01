@@ -4,4 +4,4 @@ const reutersSpider = require("../spiders/reuters-spider");
 let url= "https://www.reuters.com/business/finance/";
 
 
-reutersSpider(url, '.');
+reutersSpider(url, '.', 'reuters.com');
