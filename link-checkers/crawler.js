@@ -22,7 +22,7 @@ async function crawler(url, directory_name){
         return a.href;
       });
     });
-
+    /*
     let uniqueLinks = [...new Set(links)];
     var targetDomain = "pcmfa.co";
     const filteredUrls = uniqueLinks.filter(url => {
@@ -39,6 +39,7 @@ async function crawler(url, directory_name){
       ]; 
       await linke_checker(patterns, link, directory_name,url);
     }
+    */
     await browser.close();
     return filteredUrls;
   } catch (error) {
