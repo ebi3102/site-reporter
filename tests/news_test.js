@@ -1,5 +1,5 @@
 const crawler = require("../link-checkers/crawler");
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 
 
 // let url = "https://bitsarf.com/%d8%a8%d8%b1%da%af%d9%87-%d9%86%d9%85%d9%88%d9%86%d9%87/";
@@ -11,7 +11,7 @@ const puppeteer = require('puppeteer');
 // let url = "https://wordpress.org/latest.zip";
 // let url = "https://pcmfa.blog/files/John-j-morphy-technical-analysis-of-the-financial-markets-fa.pdf";
 // let url = "https://pcmfa.net/";
-let url= "https://pcmfa.academy/fa/";
+let url= "https://www.reuters.com/business/finance/";
 
 
 crawler(url, '.');
