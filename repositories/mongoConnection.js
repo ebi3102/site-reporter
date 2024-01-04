@@ -1,14 +1,9 @@
 const { MongoClient } = require('mongodb');
+const { mongodbUri, dbName } = require('../app.config');
 
-module.exports = {
-    connectToMongo,
-    insertData,
-    closeConnection,
-  };
-
-const connectToMongo = async (uri, dbName, collectionName) => {
+const connectToMongo = async (collectionName) => {
   try {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = await MongoClient.connect(mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
@@ -30,3 +25,9 @@ const insertData = async (collection, data) => {
 const closeConnection = (client) => {
   client.close();
 };
+
+module.exports = {
+    connectToMongo,
+    insertData,
+    closeConnection,
+  };
