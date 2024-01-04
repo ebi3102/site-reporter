@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const write_log = require('../file-handlers/file-writer');
 const { URL } = require('url');
+const { connectToMongo, insertData, closeConnection } = require('../repositories/mongoConnection');
+const { newsCollectionName } = require('../app.config');
 
 async function reutersSpider(url, directory_name, targetDomain){
   try{
@@ -14,7 +16,6 @@ async function reutersSpider(url, directory_name, targetDomain){
       let Elem = [];
       for(var i=0; i<anchorElements.length; i++){
         Elem.push(anchorElements[i].href);
-        // console.log("links", anchorElements[i].href);
       }
       return Elem;
     });
@@ -45,15 +46,27 @@ async function reutersSpider(url, directory_name, targetDomain){
 
 
     let data = JSON.stringify(crawlContent);
+    //store json data into the mongo db
+    (async () => {
+      try {
+        const { client, collection } = await connectToMongo(newsCollectionName);
+        const insertedData = await insertData(collection, data);
+        console.log('Data inserted successfully:', insertedData);
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        closeConnection(client);
+      }
+    })();
+
     console.log(data);
     await write_log(
       `${directory_name}/data.json`,
       `${data}`
     );
 
-
     await browser.close();
-    // return filter?edUrls;
+
   } catch (error) {
     console.error('Error in opening url:', error);
     await write_log(
