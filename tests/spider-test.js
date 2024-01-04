@@ -4,7 +4,7 @@ const reutersSpider = require("../spiders/reuters-spider");
 function spiderTest()
 {
     let url= "https://www.reuters.com/business/finance/";
-    reutersSpider(url, logDirectory, 'reuters.com');
+    reutersSpider(logDirectory);
 }
 
 module.exports = spiderTest;
