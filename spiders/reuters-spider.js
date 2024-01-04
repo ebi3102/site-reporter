@@ -3,8 +3,12 @@ const write_log = require('../file-handlers/file-writer');
 const { URL } = require('url');
 const { connectToMongo, insertData, closeConnection } = require('../repositories/mongoConnection');
 const { newsCollectionName } = require('../app.config');
+const url_status_check = require('../link-checkers/url-status');
 
-async function reutersSpider(url, directory_name, targetDomain){
+async function reutersSpider(logDirectoy){
+  const url = "https://www.reuters.com/business/finance/";
+  const targetDomain = "reuters.com";
+
   try{
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
@@ -27,51 +31,36 @@ async function reutersSpider(url, directory_name, targetDomain){
         return parsedUrl.hostname.match(targetDomain)
       }
     });
-    console.log(filteredUrls);
     let crawlContent = [];
     for (const link of filteredUrls) {
-      let status = await url_status_check(link);
-      if(!status){
-        write_log(`${directory_name}/debug.log`, `The ${link} is not opened \n`);
-        return;
-      }
+      // let status = await url_status_check(link);
+      // if(!status){
+        // write_log(`${logDirectoy}/debug.log`, `The ${link} is not opened \n`);
+        // return;
+      // }
       let siteContent = {};
       siteContent.url = await link;
       siteContent.data = await read_page_content(link);
       if(siteContent.data ){
         crawlContent.push(siteContent);
+        //store json data into the mongo db
+        await db_store(siteContent).catch ((error) =>{
+          console.error(error.message);
+          write_log(
+            `${logDirectoy}/debug.log`,
+            `${error.message} \n`
+          )
+        });
       }
-      
     }
-
-
-    let data = JSON.stringify(crawlContent);
-    //store json data into the mongo db
-    (async () => {
-      try {
-        const { client, collection } = await connectToMongo(newsCollectionName);
-        const insertedData = await insertData(collection, data);
-        console.log('Data inserted successfully:', insertedData);
-      } catch (error) {
-        console.error(error.message);
-      } finally {
-        closeConnection(client);
-      }
-    })();
-
-    console.log(data);
-    await write_log(
-      `${directory_name}/data.json`,
-      `${data}`
-    );
 
     await browser.close();
 
   } catch (error) {
-    console.error('Error in opening url:', error);
+    console.error(error);
     await write_log(
-      `${directory_name}/debug.log`,
-      `Error in opening url: ${url} \n`
+      `${logDirectoy}/debug.log`,
+      `${error} \n`
     );
   }
 };
@@ -85,7 +74,6 @@ async function read_page_content(url)
     const page = await browser.newPage();
 
     await page.goto(url);
-    // await page.waitForSelector('li.story-collection__story__LeZ29 div.media-story-card__body__3tRWy a');
     const pageContent = await page.evaluate(() => {
       if(!document.querySelector('main.regular-article-layout__main__1tzD8')){
         return false;
@@ -119,6 +107,10 @@ async function read_page_content(url)
             ldJsonScripts.push(ldJsonContent);
           } catch (error) {
             console.error('Error parsing JSON in application/ld+json script:', error);
+            write_log(
+              `${logDirectoy}/debug.log`,
+              `Error parsing JSON in application/ld+json script: ${error.message} \n`
+            );
           }
         }
       });
@@ -165,32 +157,18 @@ async function read_page_content(url)
     return pageContent;
 
   }catch{
-
-  }
-}
-
-async function linke_checker(patterns, link, logPath, pageUrl){
-  try{
-    var patternFound = patterns.some(function(pattern) {
-      var regex = new RegExp(pattern, "i"); // "i" flag for case-insensitive matching
-      return regex.test(link);
-    });
-
-    if(patternFound){
-      console.log(link)
-      await write_log(
-        `${logPath}/hack.log`,
-        `In ${pageUrl} there is the follow danger link:
-        ${link} \n`
-      );
-    }
-
-  } catch(error){
-    console.error(`Error in regestring link ${link} :`, error);
     await write_log(
-      `${logPath}/broken.log`,
-      `In ${pageUrl} there is an error in opening link
-      ${link} : ${error} \n`
+      `${logDirectoy}/debug.log`,
+      `${error.message} \n`
     );
   }
 }
+
+async function db_store (siteContent) {
+    const { client, collection } = await connectToMongo(newsCollectionName);
+    try {
+      const insertedData = await insertData(collection, siteContent);
+    } finally {
+      closeConnection(client);
+    }
+};
