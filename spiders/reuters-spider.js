@@ -29,6 +29,11 @@ async function reutersSpider(url, directory_name, targetDomain){
     console.log(filteredUrls);
     let crawlContent = [];
     for (const link of filteredUrls) {
+      let status = await url_status_check(link);
+      if(!status){
+        write_log(`${directory_name}/debug.log`, `The ${link} is not opened \n`);
+        return;
+      }
       let siteContent = {};
       siteContent.url = await link;
       siteContent.data = await read_page_content(link);
