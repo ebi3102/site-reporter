@@ -2,3 +2,4 @@
 /screenshots
 /crawled
 *.log
+/package-lock.json
