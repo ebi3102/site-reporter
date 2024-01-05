@@ -12,6 +12,7 @@
   "dependencies": {
     "fs": "^0.0.1-security",
     "mongodb": "^6.3.0",
-    "puppeteer": "^20.4.0"
+    "puppeteer": "^20.4.0",
+    "typescript": "^5.3.3"
   }
 }
