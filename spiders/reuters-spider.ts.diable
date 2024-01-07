@@ -5,6 +5,7 @@ import { connectToMongo, insertData, closeConnection } from '../repositories/mon
 import { newsCollectionName } from '../app.config';
 import urlStatusCheck from '../link-checkers/url-status';
 
+
 interface SiteContent {
   url: string;
   data: any; // Adjust this type based on the actual structure of your data
