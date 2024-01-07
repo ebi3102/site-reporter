@@ -1,11 +1,7 @@
 import { MongoClient, Collection } from 'mongodb';
 import { mongodbUri, dbName } from '../app.config';
-
-interface Connection {
-  client: MongoClient;
-  collection: Collection;
-}
-
+import { Connection } from './interfaces';
+ 
 const connectToMongo = async (collectionName: string): Promise<Connection> => {
   try {
     const client = new MongoClient(mongodbUri);
