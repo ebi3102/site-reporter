@@ -33,11 +33,11 @@ async function reutersSpider(logDirectoy){
     });
     let crawlContent = [];
     for (const link of filteredUrls) {
-      // let status = await url_status_check(link);
-      // if(!status){
-        // write_log(`${logDirectoy}/debug.log`, `The ${link} is not opened \n`);
-        // return;
-      // }
+      let status = await url_status_check(link);
+      if(!status){
+        write_log(`${logDirectoy}/debug.log`, `The ${link} is not opened \n`);
+        return;
+      }
       let siteContent = {};
       siteContent.url = await link;
       siteContent.data = await read_page_content(link);
