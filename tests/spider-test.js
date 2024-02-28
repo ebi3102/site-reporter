@@ -1,10 +1,12 @@
 const { logDirectory } = require("../app.config");
+const pcmBlogSpider = require("../spiders/blog-spider");
 const reutersSpider = require("../spiders/reuters-spider");
 
 function spiderTest()
 {
-    let url= "https://www.reuters.com/business/finance/";
-    reutersSpider(logDirectory);
+    // reutersSpider(logDirectory);
+    pcmBlogSpider(logDirectory);
+
 }
 
 module.exports = spiderTest;
