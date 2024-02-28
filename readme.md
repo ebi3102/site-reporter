@@ -1,3 +1,6 @@
+It is a robot application that is able to crawl some news website like reuters
+
+
 For installing the project at first install nodejs from below link:
 https://nodejs.org/en/download
 
