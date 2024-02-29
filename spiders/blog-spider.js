@@ -34,7 +34,7 @@ async function pcmBlogSpider(logDirectoy){
     for (const link of filteredUrls) {
       let siteContent = {};
       siteContent.url = await link;
-      siteContent.data = await read_page_content(link);
+      siteContent.data = await read_page_content(link, logDirectoy);
       if(siteContent.data ){
         crawlContent.push(siteContent);
         write_log(
@@ -65,7 +65,7 @@ async function pcmBlogSpider(logDirectoy){
 
 module.exports = pcmBlogSpider;
 
-async function read_page_content(url)
+async function read_page_content(url, logDirectoy)
 {
   try{
     const browser = await puppeteer.launch({headless: false});
@@ -79,28 +79,8 @@ async function read_page_content(url)
 
       let content = {};
       if(document.querySelector('h1.jeg_post_title')){
-        content['title'] = document.querySelector('h1.jeg_post_title');
+        content['title'] = document.querySelector('h1.jeg_post_title').textContent;
       }
-
-      // let mainContent = {};
-      // const contentHeader = document.querySelector('div.default-article-header__container__3NcV7');
-
-      /**
-       * Set Categories
-       */
-      // const categoriesElem = contentHeader.querySelectorAll('nav.headline__tags__2iIxq>ul>li>a');
-      // let categories = [];
-      // for(var i=0; i<categoriesElem.length; i++){
-      //   categories.push(categoriesElem[i].textContent);
-      // }
-      // mainContent.categories = categories;
-
-      /**
-       * Set content title
-       */
-
-      // mainContent.title = contentHeader.querySelector('h1').textContent;
-
       /**
        * Set content sections
        */
@@ -108,28 +88,15 @@ async function read_page_content(url)
       const contentSections = document.querySelectorAll('div.elementor-widget-container');
       const invalideElements = ['script', 'style']
       for(var i=0; i<contentSections.length; i++){
+        sectionObject = {}
         for (const child of contentSections[i].children) {
           if(!invalideElements.includes(child.tagName.toLowerCase())){
-            for (const childElem of child.children) {
-              // console.log(child)
-              contentElems.push(child)
-            }
+            sectionObject[child.tagName] = child.innerHTML
           }
         }
+        contentElems.push(sectionObject)
       }
-
-
-
-
-
-      // let paragraphs = [];
-      // for(var i=0; i<contentPargraphs.length; i++){
-      //   paragraphs.push(contentPargraphs[i].textContent);
-      // }
-
-      // mainContent.content = paragraphs;
-
-      content.mainContent = contentElems;
+      content.mainContent = JSON.stringify(contentElems);
 
       return content;
 
@@ -139,7 +106,7 @@ async function read_page_content(url)
 
     return pageContent;
 
-  }catch{
+  }catch (error){
     await write_log(
       `${logDirectoy}/debug.log`,
       `${error.message} \n`
